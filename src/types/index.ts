@@ -4,8 +4,9 @@ export interface Extrato {
   descricao: string;
   categoria: string;
   tipo: 'receita' | 'gasto';
-  data: string; // YYYY-MM-DD
-  saldoConta?: number; // saldo informado no extrato (opcional)
+  data: string;       // YYYY-MM-DD
+  criadoEm?: string;  // ISO 8601 — ex: "2026-03-10T14:32:00.000Z"
+  saldoConta?: number;
 }
 
 export interface DividaMovimento {

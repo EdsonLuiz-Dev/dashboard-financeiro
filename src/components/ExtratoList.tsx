@@ -8,6 +8,12 @@ function formatDate(dateStr: string) {
   return `${d}/${m}/${y}`;
 }
 
+function formatTime(criadoEm?: string) {
+  if (!criadoEm) return null;
+  const d = new Date(criadoEm);
+  return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
 interface Props {
   extratos: Extrato[];
   catColors: Record<string, string>;
@@ -18,7 +24,11 @@ interface Props {
 export default function ExtratoList({ extratos, catColors, onRemove, activeCategory }: Props) {
   if (extratos.length === 0) return null;
 
-  const sorted = [...extratos].sort((a, b) => b.data.localeCompare(a.data));
+  const sorted = [...extratos].sort((a, b) => {
+    const tA = a.criadoEm ?? a.data;
+    const tB = b.criadoEm ?? b.data;
+    return tB.localeCompare(tA);
+  });
 
   const [page, setPage] = useState(1);
   const perPage = 20;
@@ -68,16 +78,28 @@ export default function ExtratoList({ extratos, catColors, onRemove, activeCateg
         Extratos registrados ({extratos.length})
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        {pageItems.length === 0 && <div style={{ color: 'var(--muted)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>Nenhum registro nesta página.</div>}
+        {pageItems.length === 0 && (
+          <div style={{ color: 'var(--muted)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
+            Nenhum registro nesta página.
+          </div>
+        )}
         {(() => {
           let lastDate = '';
           return pageItems.map((e) => {
             const showSeparator = e.data !== lastDate;
             lastDate = e.data;
+            const hora = formatTime(e.criadoEm);
             return (
               <div key={e.id}>
                 {showSeparator && (
-                  <div style={{ margin: '8px 0', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--muted)' }}>
+                  <div
+                    style={{
+                      margin: '8px 0',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 12,
+                      color: 'var(--muted)',
+                    }}
+                  >
                     {formatDate(e.data)} · {weekdayFor(e.data)}
                   </div>
                 )}
@@ -107,23 +129,30 @@ export default function ExtratoList({ extratos, catColors, onRemove, activeCateg
                       }}
                     />
                     <div style={{ minWidth: 0, flex: 1 }}>
-                      <p style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: 12,
-                        color: 'var(--text)',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}>
+                      <p
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: 12,
+                          color: 'var(--text)',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
                         {e.descricao}
                       </p>
-                      <p style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: 10,
-                        color: 'var(--muted)',
-                        marginTop: 2,
-                      }}>
+                      <p
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: 10,
+                          color: 'var(--muted)',
+                          marginTop: 2,
+                        }}
+                      >
                         {e.tipo === 'receita' ? 'Receita' : e.categoria}
+                        {hora && (
+                          <span style={{ marginLeft: 6, opacity: 0.6 }}>· {hora}</span>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -165,7 +194,14 @@ export default function ExtratoList({ extratos, catColors, onRemove, activeCateg
         })()}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12 }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: 12,
+        }}
+      >
         <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)', fontSize: 12 }}>
           Mostrando {pageItems.length} de {filtered.length} lançamentos
         </div>
@@ -173,15 +209,33 @@ export default function ExtratoList({ extratos, catColors, onRemove, activeCateg
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
-            style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '6px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--surface2)', cursor: page <= 1 ? 'not-allowed' : 'pointer' }}
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 12,
+              padding: '6px 8px',
+              borderRadius: 6,
+              border: '1px solid var(--border)',
+              background: 'var(--surface2)',
+              cursor: page <= 1 ? 'not-allowed' : 'pointer',
+            }}
           >
             Anterior
           </button>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--muted)' }}>{page} / {totalPages}</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--muted)' }}>
+            {page} / {totalPages}
+          </div>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page >= totalPages}
-            style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '6px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--surface2)', cursor: page >= totalPages ? 'not-allowed' : 'pointer' }}
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 12,
+              padding: '6px 8px',
+              borderRadius: 6,
+              border: '1px solid var(--border)',
+              background: 'var(--surface2)',
+              cursor: page >= totalPages ? 'not-allowed' : 'pointer',
+            }}
           >
             Próxima
           </button>

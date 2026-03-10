@@ -247,7 +247,7 @@ export default function ExtratoForm({ categories, onAdd, onReviewImport, importS
           <div>
             <label style={labelStyle}>Valor (R$)</label>
             <input
-              type="text"
+              type="number"
               inputMode="decimal"
               placeholder="0,00"
               value={valor}
