@@ -22,7 +22,8 @@ interface Props {
 }
 
 export default function ExtratoList({ extratos, catColors, onRemove, activeCategory }: Props) {
-  if (extratos.length === 0) return null;
+  // ✅ Hooks ALWAYS first — never after a conditional return
+  const [page, setPage] = useState(1);
 
   const sorted = [...extratos].sort((a, b) => {
     const tA = a.criadoEm ?? a.data;
@@ -30,7 +31,6 @@ export default function ExtratoList({ extratos, catColors, onRemove, activeCateg
     return tB.localeCompare(tA);
   });
 
-  const [page, setPage] = useState(1);
   const perPage = 20;
 
   const filtered = activeCategory
@@ -43,13 +43,16 @@ export default function ExtratoList({ extratos, catColors, onRemove, activeCateg
     setPage(1);
   }, [activeCategory, extratos]);
 
+  // ✅ Early return only after all hooks
+  if (extratos.length === 0) return null;
+
   const pageItems = filtered.slice((page - 1) * perPage, page * perPage);
 
   function weekdayFor(dateStr: string) {
     try {
       const d = new Date(dateStr + 'T00:00:00');
       return d.toLocaleDateString('pt-BR', { weekday: 'short' });
-    } catch (err) {
+    } catch {
       return '';
     }
   }

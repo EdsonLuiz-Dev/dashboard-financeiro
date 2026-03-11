@@ -1,24 +1,14 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Divida, DividaMovimento, Extrato } from '../types';
 import { DEFAULT_CATEGORIES, DEFAULT_CAT_COLORS } from '../data/financeiro';
 import storage from '../services/storage';
 
 const STORAGE_KEYS = {
-  extratos: 'dashboard-fin-extratos',
   categories: 'dashboard-fin-categories',
-  catColors: 'dashboard-fin-cat-colors',
-  dividas: 'dashboard-fin-dividas',
+  catColors:  'dashboard-fin-cat-colors',
+  dividas:    'dashboard-fin-dividas',
   saldoAtual: 'dashboard-fin-saldo-atual',
-  hideSaldo: 'dashboard-fin-hide-saldo',
 } as const;
-
-function load<T>(key: string, fallback: T): T {
-  return storage.loadLocal(key, fallback);
-}
-
-function save<T>(key: string, value: T) {
-  void storage.save(key, value);
-}
 
 function extratoSignature(extrato: Omit<Extrato, 'id'> | Extrato) {
   return [
@@ -31,136 +21,132 @@ function extratoSignature(extrato: Omit<Extrato, 'id'> | Extrato) {
 }
 
 export function useStore() {
-  // ---------------------------------------------------------------------------
-  // Storage mode flag — exposed so the UI can show a banner
-  // ---------------------------------------------------------------------------
-  const isUsingLocalStorage = !storage.isSupabaseConfigured;
+  const [loading, setLoading] = useState(true);
 
   // ---------------------------------------------------------------------------
-  // State — seeded from localStorage synchronously (fast first render)
+  // State — starts empty, hydrated from Supabase on mount
   // ---------------------------------------------------------------------------
-  const [extratos, setExtratos] = useState<Extrato[]>(() =>
-    load(STORAGE_KEYS.extratos, [])
-  );
-  const [categories, setCategories] = useState<string[]>(() =>
-    load(STORAGE_KEYS.categories, DEFAULT_CATEGORIES)
-  );
-  const [catColors, setCatColors] = useState<Record<string, string>>(() =>
-    load(STORAGE_KEYS.catColors, DEFAULT_CAT_COLORS)
-  );
-  const [dividas, setDividas] = useState<Divida[]>(() =>
-    load(STORAGE_KEYS.dividas, [])
-  );
-  const [saldoAtual, setSaldoAtualState] = useState<number | null>(() =>
-    load(STORAGE_KEYS.saldoAtual, null)
-  );
-  const [hideSaldo, setHideSaldoState] = useState<boolean>(() =>
-    load(STORAGE_KEYS.hideSaldo, false)
-  );
+  const [extratos, setExtratos] = useState<Extrato[]>([]);
+  const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES);
+  const [catColors, setCatColors] = useState<Record<string, string>>(DEFAULT_CAT_COLORS);
+  const [dividas, setDividas] = useState<Divida[]>([]);
+  const [saldoAtual, setSaldoAtualState] = useState<number | null>(null);
+  const [hideSaldo, setHideSaldoState] = useState<boolean>(false);
+
+  // Ref to keep synchronous access to extratos (React 18 batching may defer
+  // setState updater callbacks, so reading state inside them is unreliable
+  // for code that runs *after* the setState call).
+  const extratosRef = useRef<Extrato[]>(extratos);
+  extratosRef.current = extratos;
 
   // ---------------------------------------------------------------------------
-  // Hydration from Supabase (runs once on mount when Supabase is configured)
+  // Hydration from Supabase (runs once on mount)
   // ---------------------------------------------------------------------------
   useEffect(() => {
-    if (!storage.isSupabaseConfigured) return;
+    async function hydrate() {
+      try {
+        const [
+          remoteExtratos,
+          remoteCategories,
+          remoteCatColors,
+          remoteDividas,
+          remoteSaldo,
+        ] = await Promise.all([
+          storage.loadExtratos(),
+          storage.load<string[]>(STORAGE_KEYS.categories, DEFAULT_CATEGORIES),
+          storage.load<Record<string, string>>(STORAGE_KEYS.catColors, DEFAULT_CAT_COLORS),
+          storage.load<Divida[]>(STORAGE_KEYS.dividas, []),
+          storage.load<number | null>(STORAGE_KEYS.saldoAtual, null),
+        ]);
 
-async function hydrate() {
-    const [
-        remoteExtratos,
-        remoteCategories,
-        remoteCatColors,
-        remoteDividas,
-        remoteSaldo,
-    ] = await Promise.all([
-        storage.loadWithFallback<Extrato[]>(STORAGE_KEYS.extratos, []),
-        storage.loadWithFallback<string[]>(STORAGE_KEYS.categories, DEFAULT_CATEGORIES),
-        storage.loadWithFallback<Record<string, string>>(STORAGE_KEYS.catColors, DEFAULT_CAT_COLORS),
-        storage.loadWithFallback<Divida[]>(STORAGE_KEYS.dividas, []),
-        storage.loadWithFallback<number | null>(STORAGE_KEYS.saldoAtual, null),
-    ]);
-
-    setExtratos(remoteExtratos);
-    setCategories(remoteCategories);
-    setCatColors(remoteCatColors);
-    setDividas(remoteDividas);
-    setSaldoAtualState(remoteSaldo);
+        extratosRef.current = remoteExtratos;
+        setExtratos(remoteExtratos);
+        setCategories(remoteCategories);
+        setCatColors(remoteCatColors);
+        setDividas(remoteDividas);
+        setSaldoAtualState(remoteSaldo);
+      } catch (err) {
+        console.warn('[useStore] hydration error:', err);
+      } finally {
+        setLoading(false);
+      }
     }
 
     void hydrate();
   }, []);
 
   // ---------------------------------------------------------------------------
-  // Extratos
+  // Extratos — all reads use extratosRef for synchronous access
   // ---------------------------------------------------------------------------
-    const addExtrato = useCallback((extrato: Omit<Extrato, 'id'>) => {
-    setExtratos((prev) => {
-        const next = [
-        ...prev,
-        {
-            ...extrato,
-            id: crypto.randomUUID(),
-            criadoEm: new Date().toISOString(), // ← adicionar aqui
-        },
-        ];
-        save(STORAGE_KEYS.extratos, next);
-        return next;
-    });
-    }, []);
+  const addExtrato = useCallback((extrato: Omit<Extrato, 'id'>) => {
+    const newExtrato: Extrato = {
+      ...extrato,
+      id: crypto.randomUUID(),
+      criadoEm: new Date().toISOString(),
+    };
+
+    const next = [...extratosRef.current, newExtrato];
+    extratosRef.current = next;
+    setExtratos(next);
+    void storage.insertExtrato(newExtrato);
+  }, []);
 
   const addExtratos = useCallback((items: Array<Omit<Extrato, 'id'>>) => {
     let imported = 0;
     let skipped = 0;
     let updated = 0;
+    const newRows: Extrato[] = [];
 
-    setExtratos((prev) => {
-      const signatureToIndex = new Map<string, number>();
-      prev.forEach((extrato, idx) =>
-        signatureToIndex.set(extratoSignature(extrato), idx)
-      );
+    const prev = extratosRef.current;
+    const signatureToIndex = new Map<string, number>();
+    prev.forEach((extrato, idx) =>
+      signatureToIndex.set(extratoSignature(extrato), idx)
+    );
 
-      const next = [...prev];
+    const next = [...prev];
 
-      for (const item of items) {
-        const signature = extratoSignature(item);
-        if (signatureToIndex.has(signature)) {
-          const idx = signatureToIndex.get(signature)!;
-          const existing = next[idx];
-          let changed = false;
+    for (const item of items) {
+      const signature = extratoSignature(item);
+      if (signatureToIndex.has(signature)) {
+        const idx = signatureToIndex.get(signature)!;
+        const existing = next[idx];
+        let changed = false;
 
-          if (
-            (existing as any).saldoConta === undefined &&
-            (item as any).saldoConta !== undefined
-          ) {
-            next[idx] = { ...existing, saldoConta: (item as any).saldoConta };
-            changed = true;
-          }
-
-          if (changed) {
-            updated += 1;
-          } else {
-            skipped += 1;
-          }
-          continue;
+        if (
+          (existing as any).saldoConta === undefined &&
+          (item as any).saldoConta !== undefined
+        ) {
+          next[idx] = { ...existing, saldoConta: (item as any).saldoConta };
+          changed = true;
         }
 
-        signatureToIndex.set(signature, next.length);
-        next.push({ ...item, id: crypto.randomUUID() });
-        imported += 1;
+        if (changed) updated += 1;
+        else skipped += 1;
+        continue;
       }
 
-      save(STORAGE_KEYS.extratos, next);
-      return next;
-    });
+      const newExtrato: Extrato = { ...item, id: crypto.randomUUID() };
+      signatureToIndex.set(signature, next.length);
+      next.push(newExtrato);
+      newRows.push(newExtrato);
+      imported += 1;
+    }
+
+    extratosRef.current = next;
+    setExtratos(next);
+
+    if (newRows.length > 0) {
+      void storage.insertExtratos(newRows);
+    }
 
     return { imported, skipped, updated };
   }, []);
 
   const removeExtrato = useCallback((id: string) => {
-    setExtratos((prev) => {
-      const next = prev.filter((e) => e.id !== id);
-      save(STORAGE_KEYS.extratos, next);
-      return next;
-    });
+    const next = extratosRef.current.filter((e) => e.id !== id);
+    extratosRef.current = next;
+    setExtratos(next);
+    void storage.deleteExtrato(id);
   }, []);
 
   // ---------------------------------------------------------------------------
@@ -170,12 +156,12 @@ async function hydrate() {
     setCategories((prev) => {
       if (prev.includes(name)) return prev;
       const next = [...prev, name];
-      save(STORAGE_KEYS.categories, next);
+      void storage.save(STORAGE_KEYS.categories, next);
       return next;
     });
     setCatColors((prev) => {
       const next = { ...prev, [name]: color };
-      save(STORAGE_KEYS.catColors, next);
+      void storage.save(STORAGE_KEYS.catColors, next);
       return next;
     });
   }, []);
@@ -183,13 +169,13 @@ async function hydrate() {
   const removeCategory = useCallback((name: string) => {
     setCategories((prev) => {
       const next = prev.filter((c) => c !== name);
-      save(STORAGE_KEYS.categories, next);
+      void storage.save(STORAGE_KEYS.categories, next);
       return next;
     });
     setCatColors((prev) => {
       const next = { ...prev };
       delete next[name];
-      save(STORAGE_KEYS.catColors, next);
+      void storage.save(STORAGE_KEYS.catColors, next);
       return next;
     });
   }, []);
@@ -214,7 +200,7 @@ async function hydrate() {
             movimentos: divida.movimentos ?? [],
           },
         ];
-        save(STORAGE_KEYS.dividas, next);
+        void storage.save(STORAGE_KEYS.dividas, next);
         return next;
       });
     },
@@ -224,7 +210,7 @@ async function hydrate() {
   const removeDivida = useCallback((id: string) => {
     setDividas((prev) => {
       const next = prev.filter((d) => d.id !== id);
-      save(STORAGE_KEYS.dividas, next);
+      void storage.save(STORAGE_KEYS.dividas, next);
       return next;
     });
   }, []);
@@ -242,7 +228,7 @@ async function hydrate() {
             ],
           };
         });
-        save(STORAGE_KEYS.dividas, next);
+        void storage.save(STORAGE_KEYS.dividas, next);
         return next;
       });
     },
@@ -259,7 +245,7 @@ async function hydrate() {
             movimentos: divida.movimentos.filter((m) => m.id !== movimentoId),
           };
         });
-        save(STORAGE_KEYS.dividas, next);
+        void storage.save(STORAGE_KEYS.dividas, next);
         return next;
       });
     },
@@ -277,35 +263,30 @@ async function hydrate() {
     setSaldoAtualState(null);
     setHideSaldoState(false);
 
-    save(STORAGE_KEYS.extratos, []);
-    save(STORAGE_KEYS.dividas, []);
-    save(STORAGE_KEYS.categories, DEFAULT_CATEGORIES);
-    save(STORAGE_KEYS.catColors, DEFAULT_CAT_COLORS);
-    save(STORAGE_KEYS.saldoAtual, null);
-    storage.saveLocal(STORAGE_KEYS.hideSaldo, false);
+    void storage.save(STORAGE_KEYS.dividas, []);
+    void storage.save(STORAGE_KEYS.categories, DEFAULT_CATEGORIES);
+    void storage.save(STORAGE_KEYS.catColors, DEFAULT_CAT_COLORS);
+    void storage.save(STORAGE_KEYS.saldoAtual, null);
+    void storage.clearExtratos();
   }, []);
 
   const setSaldoAtual = useCallback((value: number | null) => {
     setSaldoAtualState(value);
-    save(STORAGE_KEYS.saldoAtual, value);
+    void storage.save(STORAGE_KEYS.saldoAtual, value);
   }, []);
 
   const setHideSaldo = useCallback((value: boolean) => {
     setHideSaldoState(value);
-    save(STORAGE_KEYS.hideSaldo, value);
   }, []);
 
   return {
-    // data
+    loading,
     extratos,
     categories,
     catColors,
     dividas,
     saldoAtual,
     hideSaldo,
-    // storage mode — use this to show/hide the banner
-    isUsingLocalStorage,
-    // actions
     addExtrato,
     addExtratos,
     removeExtrato,

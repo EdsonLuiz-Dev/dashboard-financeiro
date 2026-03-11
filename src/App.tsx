@@ -24,8 +24,7 @@ function subtractMonths(dateString: string, amount: number) {
 
 export default function App() {
   const store = useStore();
-  const months = getAvailableMonths(store.extratos, store.dividas);
-  const [activeMonth, setActiveMonth] = useState<string>(months.length > 0 ? months[months.length - 1] : '');
+  const [activeMonth, setActiveMonth] = useState<string>('');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showCategories, setShowCategories] = useState(false);
   const [importPreview, setImportPreview] = useState<ImportReviewItem[] | null>(null);
@@ -34,10 +33,26 @@ export default function App() {
   const [importSaldo, setImportSaldo] = useState<number | null>(null);
   const [editingSaldo, setEditingSaldo] = useState(false);
   const [tempSaldo, setTempSaldo] = useState('');
-  const data = useFinanceiro(store.extratos, store.dividas, activeMonth, store.saldoAtual ?? null);
+
+  const months = getAvailableMonths(store.extratos, store.dividas);
+  const effectiveMonth = activeMonth && months.includes(activeMonth) ? activeMonth : (months.length > 0 ? months[months.length - 1] : '');
+  const data = useFinanceiro(store.extratos, store.dividas, effectiveMonth, store.saldoAtual ?? null);
   const dashboardEntries = getDashboardEntries(store.extratos, store.dividas);
 
   const hasData = dashboardEntries.length > 0;
+
+  // Sync activeMonth when months change after hydration
+  if (effectiveMonth !== activeMonth) {
+    setActiveMonth(effectiveMonth);
+  }
+
+  if (store.loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--muted)', fontFamily: 'var(--font-mono)', fontSize: 14 }}>
+        Carregando dados...
+      </div>
+    );
+  }
 
   const handleReviewImport = (items: ImportReviewItem[], warnings: string[], saldoFinal?: number | null) => {
     if (items.length === 0) {
