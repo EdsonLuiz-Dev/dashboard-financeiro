@@ -27,16 +27,8 @@ export default function ImportReviewModal({ items, categories, warnings, onCance
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0, 0, 0, 0.72)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-        zIndex: 120,
-      }}
+      className="modal-overlay"
+      style={{ zIndex: 120 }}
       onClick={(event) => {
         if (event.target === event.currentTarget) {
           onCancel();
@@ -44,74 +36,62 @@ export default function ImportReviewModal({ items, categories, warnings, onCance
       }}
     >
       <div
+        className="modal modal-wide animated"
         style={{
           width: 'min(1120px, 100%)',
           maxHeight: '88vh',
           overflow: 'auto',
-          background: 'var(--surface)',
-          border: '1px solid var(--border)',
-          borderRadius: 16,
-          padding: 24,
-          animation: 'fadeUp 0.3s ease both',
+          padding: 'var(--space-6)',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
-              Revisar importação CSV
-            </p>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 700, color: 'var(--text)' }}>
+            <p className="modal-subtitle">Revisar importação CSV</p>
+            <p className="text-display text-2xl font-bold mb-2">
               Pré-visualização dos lançamentos
             </p>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>
+            <p className="text-mono text-sm text-muted">
               Revise categorias e escolha se cada linha entra como extrato, dívida de crédito ou será ignorada.
             </p>
           </div>
-          <button
-            onClick={onCancel}
-            style={{ fontFamily: 'var(--font-mono)', fontSize: 16, background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer' }}
-          >
-            ✕
-          </button>
+          <button onClick={onCancel} className="modal-close">✕</button>
         </div>
 
         {warnings.length > 0 && (
-          <div style={{ marginBottom: 16, padding: 12, borderRadius: 10, background: 'rgba(249,199,79,0.08)', border: '1px solid rgba(249,199,79,0.25)' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--yellow)' }}>
+          <div className="warning-box mb-4">
+            <p className="text-mono text-sm text-warning">
               {warnings.length} linha(s) foram ignoradas durante a leitura do CSV.
             </p>
           </div>
         )}
 
-        <div style={{ display: 'grid', gap: 10 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--muted)' }}>
+        <div className="grid gap-3">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
+            <div className="text-mono text-sm text-muted">
               Página {page} / {Math.max(1, Math.ceil(draftItems.length / perPage))}
             </div>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '6px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--surface2)', cursor: page <= 1 ? 'not-allowed' : 'pointer' }}
+                className="btn btn-sm"
+                style={{ cursor: page <= 1 ? 'not-allowed' : 'pointer' }}
               >
                 ← Anterior
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(Math.max(1, Math.ceil(draftItems.length / perPage)), p + 1))}
                 disabled={page >= Math.max(1, Math.ceil(draftItems.length / perPage))}
-                style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '6px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--surface2)', cursor: page >= Math.max(1, Math.ceil(draftItems.length / perPage)) ? 'not-allowed' : 'pointer' }}
+                className="btn btn-sm"
+                style={{ cursor: page >= Math.max(1, Math.ceil(draftItems.length / perPage)) ? 'not-allowed' : 'pointer' }}
               >
                 Próxima →
               </button>
             </div>
           </div>
 
-          {/* Top confirm duplicate */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
-            <button
-              onClick={() => onConfirm(draftItems)}
-              style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '8px 12px', borderRadius: 8, border: 'none', background: 'var(--accent)', color: '#fff', cursor: 'pointer' }}
-            >
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 'var(--space-2)' }}>
+            <button onClick={() => onConfirm(draftItems)} className="btn btn-accent">
               Confirmar importação
             </button>
           </div>
@@ -119,43 +99,29 @@ export default function ImportReviewModal({ items, categories, warnings, onCance
           {draftItems.slice((page - 1) * perPage, page * perPage).map((item) => {
             const canBeDebt = item.tipo === 'gasto' && Boolean(item.parcelas && item.parcelas > 1);
             return (
-              <div
-                key={item.id}
-                style={{
-                  border: '1px solid var(--border)',
-                  borderRadius: 12,
-                  background: 'var(--surface2)',
-                  padding: 14,
-                }}
-              >
-                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 0.8fr 0.9fr 1fr 1fr', gap: 12, alignItems: 'start' }}>
+              <div key={item.id} className="card-secondary">
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 0.8fr 0.9fr 1fr 1fr', gap: 'var(--space-3)', alignItems: 'start' }}>
                   <div>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
-                      Lançamento
-                    </p>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text)' }}>{item.descricao}</p>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', marginTop: 4 }}>
+                    <p className="label mb-2">Lançamento</p>
+                    <p className="text-mono text-sm">{item.descricao}</p>
+                    <p className="text-mono text-xs text-muted mt-1">
                       {item.sourceBank.toUpperCase()} · {item.data}
                     </p>
                   </div>
 
                   <div>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
-                      Valor
-                    </p>
-                    <p style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: item.tipo === 'receita' ? 'var(--green)' : 'var(--red)' }}>
+                    <p className="label mb-2">Valor</p>
+                    <p className={`text-display text-lg font-bold ${item.tipo === 'receita' ? 'text-success' : 'text-danger'}`}>
                       {item.tipo === 'receita' ? '+' : '-'}{fmt.format(item.valor)}
                     </p>
                   </div>
 
                   <div>
-                    <label style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, display: 'block' }}>
-                      Destino
-                    </label>
+                    <label className="label">Destino</label>
                     <select
                       value={item.target}
                       onChange={(event) => updateItem(item.id, { target: event.target.value as ImportReviewItem['target'] })}
-                      style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', width: '100%' }}
+                      className="input"
                     >
                       <option value="extrato">Extrato</option>
                       {canBeDebt && <option value="divida-credito">Dívida crédito</option>}
@@ -164,46 +130,40 @@ export default function ImportReviewModal({ items, categories, warnings, onCance
                   </div>
 
                   <div>
-                    <label style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, display: 'block' }}>
-                      Categoria
-                    </label>
-                    <>
-                      <input
-                        list={`cats-${item.id}`}
-                        value={item.categoria}
-                        onChange={(event) => updateItem(item.id, { categoria: event.target.value })}
-                        style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', width: '100%' }}
-                      />
-                      <datalist id={`cats-${item.id}`}>
-                        {categories.map((category) => (
-                          <option key={category} value={category} />
-                        ))}
-                      </datalist>
-                    </>
+                    <label className="label">Categoria</label>
+                    <input
+                      list={`cats-${item.id}`}
+                      value={item.categoria}
+                      onChange={(event) => updateItem(item.id, { categoria: event.target.value })}
+                      className="input"
+                    />
+                    <datalist id={`cats-${item.id}`}>
+                      {categories.map((category) => (
+                        <option key={category} value={category} />
+                      ))}
+                    </datalist>
                   </div>
 
                   <div>
                     {item.target === 'divida-credito' ? (
                       <>
-                        <label style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, display: 'block' }}>
-                          Dívida crédito
-                        </label>
+                        <label className="label">Dívida crédito</label>
                         <input
                           value={item.debtTitle ?? ''}
                           onChange={(event) => updateItem(item.id, { debtTitle: event.target.value })}
                           placeholder="Título da dívida"
-                          style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', width: '100%', marginBottom: 8 }}
+                          className="input mb-2"
                         />
                         <input
                           type="number"
                           min="1"
                           value={item.parcelas ?? 1}
                           onChange={(event) => updateItem(item.id, { parcelas: Number.parseInt(event.target.value, 10) || 1 })}
-                          style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', width: '100%' }}
+                          className="input"
                         />
                       </>
                     ) : (
-                      <div style={{ paddingTop: 24, fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)' }}>
+                      <div style={{ paddingTop: 'var(--space-6)' }} className="text-mono text-xs text-muted">
                         {item.parcelas ? `Parcela ${item.parcelaAtual}/${item.parcelas}` : item.tipo === 'receita' ? 'Receita' : 'Gasto'}
                       </div>
                     )}
@@ -214,21 +174,15 @@ export default function ImportReviewModal({ items, categories, warnings, onCance
           })}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginTop: 20, flexWrap: 'wrap' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--muted)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--space-3)', marginTop: 'var(--space-5)', flexWrap: 'wrap' }}>
+          <p className="text-mono text-sm text-muted">
             {draftItems.filter((item) => item.target !== 'ignorar').length} item(ns) selecionado(s) para importação.
           </p>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button
-              onClick={onCancel}
-              style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', color: 'var(--muted)', cursor: 'pointer' }}
-            >
+          <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+            <button onClick={onCancel} className="btn btn-outline">
               Cancelar
             </button>
-            <button
-              onClick={() => onConfirm(draftItems)}
-              style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 14px', borderRadius: 8, border: 'none', background: 'var(--accent)', color: '#fff', cursor: 'pointer' }}
-            >
+            <button onClick={() => onConfirm(draftItems)} className="btn btn-accent">
               Confirmar importação
             </button>
           </div>

@@ -35,26 +35,8 @@ export default function ChartBar({ gastos, catColors }: Props) {
   };
 
   return (
-    <div
-      style={{
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 12,
-        padding: 20,
-        animation: 'fadeUp 0.4s ease both',
-        transition: 'transform 0.2s, border-color 0.2s',
-      }}
-    >
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          color: 'var(--muted)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          marginBottom: 16,
-        }}
-      >
+    <div className="chart-bar">
+      <p className="chart-bar-title">
         Gastos por Categoria
       </p>
       <Bar

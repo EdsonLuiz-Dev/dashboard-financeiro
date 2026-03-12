@@ -40,7 +40,7 @@ export default function DividaCard({
   const quitada = falta <= 0;
   const parcelaMedia = divida.parcelas > 0 ? totalAtual / divida.parcelas : totalAtual;
   const parcelasLiquidadas = parcelaMedia > 0 ? Math.min(Math.floor(totalPago / parcelaMedia), divida.parcelas) : 0;
-  const color = catColors[divida.categoria] ?? 'var(--accent2)';
+  const color = catColors[divida.categoria] ?? 'var(--color-accent-2)';
   const modalidade = divida.modalidade ?? 'geral';
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -66,271 +66,151 @@ export default function DividaCard({
   const sortedMovimentos = [...divida.movimentos].sort((a, b) => b.data.localeCompare(a.data));
 
   return (
-    <div
-      style={{
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 12,
-        padding: 20,
-        animation: 'fadeUp 0.4s ease both',
-      }}
-    >
-      <div
-        style={{
+    <div className="divida-card">
+      <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'flex-start',
-          gap: 16,
+          gap: 'var(--space-4)',
           flexWrap: 'wrap',
-          marginBottom: 16,
-        }}
-      >
+          marginBottom: 'var(--space-4)',
+        }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
             <span
+              className="w-3 h-3"
               style={{
-                width: 10,
-                height: 10,
                 borderRadius: '50%',
                 background: color,
                 flexShrink: 0,
               }}
             />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-              <p
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 22,
-                  fontWeight: 700,
-                  color: 'var(--text)',
-                }}
-              >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+              <p className="text-display text-xl font-bold">
                 {divida.titulo}
               </p>
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 10,
-                  padding: '4px 8px',
-                  borderRadius: 999,
-                  background: modalidade === 'credito' ? 'rgba(249,123,79,0.12)' : 'rgba(79,156,249,0.12)',
-                  color: modalidade === 'credito' ? 'var(--accent2)' : 'var(--accent)',
-                  border: modalidade === 'credito' ? '1px solid rgba(249,123,79,0.25)' : '1px solid rgba(79,156,249,0.25)',
-                }}
-              >
+              <span className={`divida-card-modalidade ${modalidade}`}>
                 {modalidade === 'credito' ? 'CRÉDITO' : 'GERAL'}
               </span>
             </div>
           </div>
-          <p
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 10,
-              color: 'var(--muted)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: 6,
-            }}
-          >
+          <p className="text-mono text-xs text-muted uppercase tracking-wider mb-2">
             {divida.categoria} · {divida.parcelas} parcelas · início em {formatDate(divida.dataInicio)}
           </p>
           {divida.descricao && (
-            <p
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 12,
-                color: 'var(--muted)',
-              }}
-            >
+            <p className="text-mono text-sm text-muted">
               {divida.descricao}
             </p>
           )}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <div className="divida-card-actions">
           {quitada ? (
-            <span
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                background: 'rgba(79,190,150,0.15)',
-                color: 'var(--green)',
-                padding: '4px 10px',
-                borderRadius: 6,
-                border: '1px solid rgba(79,190,150,0.3)',
-              }}
-            >
+            <span className="badge badge-success">
               ✅ Quitada
             </span>
           ) : (
-            <span
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                background: 'rgba(249,96,79,0.15)',
-                color: 'var(--red)',
-                padding: '4px 10px',
-                borderRadius: 6,
-                border: '1px solid rgba(249,96,79,0.3)',
-              }}
-            >
+            <span className="badge badge-danger">
               🔴 Falta {fmt.format(falta)}
             </span>
           )}
-          <button
-            onClick={() => onRemove(divida.id)}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 11,
-              padding: '6px 10px',
-              borderRadius: 6,
-              border: '1px solid rgba(249,96,79,0.3)',
-              background: 'rgba(249,96,79,0.1)',
-              color: 'var(--red)',
-              cursor: 'pointer',
-            }}
-          >
+          <button onClick={() => onRemove(divida.id)} className="divida-card-remove">
             Excluir dívida
           </button>
         </div>
       </div>
 
-      <div
-        style={{
-          height: 8,
-          background: 'var(--border)',
-          borderRadius: 4,
-          overflow: 'hidden',
-          marginBottom: 12,
-        }}
-      >
+      <div className="progress-bar mb-3">
         <div
+          className="progress-bar-fill"
           style={{
             height: '100%',
             width: `${percentualPago}%`,
-            background: 'linear-gradient(90deg, var(--green), #7fffd4)',
-            borderRadius: 4,
-            transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+            background: 'var(--color-success)',
           }}
         />
       </div>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: 12,
-          marginBottom: 16,
-        }}
-      >
-        <div style={{ background: 'var(--surface2)', borderRadius: 10, padding: 12, border: '1px solid var(--border)' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
-            Total atual
-          </p>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700 }}>
+      <div className="divida-card-stats">
+        <div className="divida-card-stat">
+          <p className="divida-card-stat-label">Total atual</p>
+          <p className="divida-card-stat-value">
             {fmt.format(totalAtual)}
           </p>
         </div>
-        <div style={{ background: 'var(--surface2)', borderRadius: 10, padding: 12, border: '1px solid var(--border)' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
-            Pago
-          </p>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--green)' }}>
+        <div className="divida-card-stat">
+          <p className="divida-card-stat-label">Pago</p>
+          <p className="divida-card-stat-value positive">
             {fmt.format(totalPago)}
           </p>
         </div>
-        <div style={{ background: 'var(--surface2)', borderRadius: 10, padding: 12, border: '1px solid var(--border)' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
-            Parcelas liquidadas
-          </p>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700 }}>
+        <div className="divida-card-stat">
+          <p className="divida-card-stat-label">Parcelas liquidadas</p>
+          <p className="divida-card-stat-value">
             {parcelasLiquidadas}/{divida.parcelas}
           </p>
         </div>
-        <div style={{ background: 'var(--surface2)', borderRadius: 10, padding: 12, border: '1px solid var(--border)' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
-            Parcela média atual
-          </p>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700 }}>
+        <div className="divida-card-stat">
+          <p className="divida-card-stat-label">Parcela média atual</p>
+          <p className="divida-card-stat-value">
             {fmt.format(parcelaMedia)}
           </p>
         </div>
       </div>
 
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 11,
-          color: 'var(--muted)',
-          marginBottom: 16,
-        }}
-      >
+      <p className="text-mono text-sm text-muted mb-4">
         Inicial: {fmt.format(divida.valorInicial)} | Acréscimos: {fmt.format(totalAcrescimos)} | Falta: {fmt.format(falta)}
       </p>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: 16 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10, alignItems: 'end' }}>
+      <form onSubmit={handleSubmit} className="divida-card-form">
+        <div className="divida-card-form-grid">
           <div>
-            <label style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, display: 'block' }}>
-              Movimento
-            </label>
+            <label className="label mb-2">Movimento</label>
             <select
               value={tipo}
               onChange={(event) => setTipo(event.target.value as 'pagamento' | 'acrescimo')}
-              style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', width: '100%' }}
+              className="input"
             >
               <option value="pagamento">Pagamento</option>
               <option value="acrescimo">Acréscimo</option>
             </select>
           </div>
           <div>
-            <label style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, display: 'block' }}>
-              Valor
-            </label>
+            <label className="label mb-2">Valor</label>
             <input
               value={valor}
               onChange={(event) => setValor(event.target.value)}
               placeholder="0,00"
               inputMode="decimal"
-              style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', width: '100%' }}
+              className="input"
               required
             />
           </div>
           <div>
-            <label style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, display: 'block' }}>
-              Descrição
-            </label>
+            <label className="label mb-2">Descrição</label>
             <input
               value={descricao}
               onChange={(event) => setDescricao(event.target.value)}
               placeholder="Ex: parcela 3/12"
-              style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', width: '100%' }}
+              className="input"
             />
           </div>
           <div>
-            <label style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, display: 'block' }}>
-              Data
-            </label>
+            <label className="label mb-2">Data</label>
             <input
               type="date"
               value={data}
               onChange={(event) => setData(event.target.value)}
-              style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', width: '100%', colorScheme: 'dark' }}
+              className="input"
               required
             />
           </div>
           <button
             type="submit"
+            className="btn"
             style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 12,
-              fontWeight: 600,
-              padding: '11px 14px',
-              borderRadius: 8,
-              border: 'none',
-              background: tipo === 'pagamento' ? 'var(--green)' : 'var(--accent2)',
-              color: '#fff',
-              cursor: 'pointer',
+              background: tipo === 'pagamento' ? 'var(--color-success)' : 'var(--color-accent-2)',
+              color: 'black',
               minWidth: 120,
               width: '100%',
             }}
@@ -340,68 +220,46 @@ export default function DividaCard({
         </div>
       </form>
 
-      <div>
-        <p
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 10,
-            color: 'var(--muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            marginBottom: 10,
-          }}
-        >
+      <div className="divida-card-movimentos">
+        <p className="text-mono text-xs text-muted uppercase tracking-wider mb-3">
           Histórico da dívida
         </p>
         {sortedMovimentos.length === 0 ? (
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--muted)' }}>
+          <div className="text-mono text-sm text-muted">
             Nenhum movimento registrado.
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="flex flex-col gap-2">
             {sortedMovimentos.map((movimento) => (
               <div
                 key={movimento.id}
+                className="card-sm"
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  gap: 12,
-                  background: 'var(--surface2)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 8,
-                  padding: '10px 12px',
+                  gap: 'var(--space-3)',
                 }}
               >
                 <div>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text)' }}>
+                  <p className="text-mono text-sm">
                     {movimento.descricao}
                   </p>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)', marginTop: 2 }}>
+                  <p className="text-mono text-xs text-muted mt-1">
                     {movimento.tipo === 'pagamento' ? 'Pagamento' : 'Acréscimo'} · {formatDate(movimento.data)}
                   </p>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexShrink: 0 }}>
                   <span
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: 16,
-                      fontWeight: 700,
-                      color: movimento.tipo === 'pagamento' ? 'var(--green)' : 'var(--accent2)',
-                    }}
+                    className={`text-display text-lg font-bold ${
+                      movimento.tipo === 'pagamento' ? 'text-success' : 'text-accent-2'
+                    }`}
                   >
                     {movimento.tipo === 'pagamento' ? '-' : '+'}{fmt.format(movimento.valor)}
                   </span>
                   <button
                     onClick={() => onRemoveMovimento(divida.id, movimento.id)}
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 12,
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--muted)',
-                      cursor: 'pointer',
-                    }}
+                    className="extrato-item-remove btn-sm text-muted"
                   >
                     ✕
                   </button>

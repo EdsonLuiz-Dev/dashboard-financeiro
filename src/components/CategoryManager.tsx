@@ -22,152 +22,55 @@ export default function CategoryManager({ categories, catColors, onAdd, onRemove
     setColor(getColorForCategory('', catColors));
   };
 
-  const inputStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-mono)',
-    fontSize: 13,
-    padding: '10px 12px',
-    borderRadius: 8,
-    border: '1px solid var(--border)',
-    background: 'var(--surface2)',
-    color: 'var(--text)',
-    outline: 'none',
-    width: '100%',
-  };
-
   return (
     <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.6)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 100,
-        padding: 20,
-      }}
+      className="modal-overlay"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div
-        style={{
-          background: 'var(--surface)',
-          border: '1px solid var(--border)',
-          borderRadius: 12,
-          padding: 24,
-          width: '100%',
-          maxWidth: 440,
-          maxHeight: '80vh',
-          overflowY: 'auto',
-          animation: 'fadeUp 0.3s ease both',
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <p style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 10,
-            color: 'var(--muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-          }}>
-            Gerenciar Categorias
-          </p>
-          <button
-            onClick={onClose}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 16,
-              background: 'none',
-              border: 'none',
-              color: 'var(--muted)',
-              cursor: 'pointer',
-            }}
-          >
-            ✕
-          </button>
+      <div className="modal animated">
+        <div className="modal-header">
+          <p className="modal-title">Gerenciar Categorias</p>
+          <button onClick={onClose} className="modal-close">✕</button>
         </div>
 
-        {/* Add form */}
-        <form onSubmit={handleAdd} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+        <form onSubmit={handleAdd} style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-5)' }}>
           <input
             type="text"
             placeholder="Nova categoria"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{ ...inputStyle, flex: 1 }}
+            className="input"
+            style={{ flex: 1 }}
           />
           <input
             type="color"
             value={color}
             onChange={(e) => setColor(e.target.value)}
-            style={{
-              width: 42,
-              height: 42,
-              border: '1px solid var(--border)',
-              borderRadius: 8,
-              background: 'var(--surface2)',
-              cursor: 'pointer',
-              padding: 2,
-            }}
+            className="color-picker"
           />
-          <button
-            type="submit"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 12,
-              padding: '10px 16px',
-              borderRadius: 8,
-              border: 'none',
-              background: 'var(--accent)',
-              color: '#fff',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
+          <button type="submit" className="btn btn-accent">
             Adicionar
           </button>
         </form>
 
-        {/* Category list */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className="flex flex-col gap-2">
           {categories.map((cat) => (
-            <div
-              key={cat}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '10px 12px',
-                background: 'var(--surface2)',
-                borderRadius: 8,
-                border: '1px solid var(--border)',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div key={cat} className="category-item">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                 <span
+                  className="w-3 h-3 rounded-full"
                   style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
                     background: catColors[cat] ?? '#888',
                     flexShrink: 0,
                   }}
                 />
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text)' }}>
+                <span className="text-mono text-sm">
                   {cat}
                 </span>
               </div>
               <button
                 onClick={() => onRemove(cat)}
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 11,
-                  padding: '4px 10px',
-                  borderRadius: 6,
-                  border: '1px solid rgba(249,96,79,0.3)',
-                  background: 'rgba(249,96,79,0.1)',
-                  color: 'var(--red)',
-                  cursor: 'pointer',
-                }}
+                className="btn btn-danger btn-sm"
               >
                 Remover
               </button>

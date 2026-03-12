@@ -1,0 +1,23 @@
+/* ============================================================================
+   BREAKDOWN COMPONENT
+   ============================================================================ */
+
+.breakdown {
+  margin-bottom: var(--space-5);
+}
+
+.breakdown-header {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-4);
+}
+
+.breakdown-grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+}

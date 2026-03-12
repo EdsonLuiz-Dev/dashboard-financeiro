@@ -1,20 +1,31 @@
-:root {
-  --bg: #0d0f14;
-  --surface: #151820;
-  --surface2: #1c2030;
-  --border: #252a3a;
-  --accent: #4f9cf9;
-  --accent2: #f97b4f;
-  --green: #4fbe96;
-  --red: #f9604f;
-  --yellow: #f9c74f;
-  --purple: #9b7ff9;
-  --text: #e8eaf2;
-  --muted: #6b7394;
-  --font-display: 'Syne', sans-serif;
-  --font-mono: 'DM Mono', monospace;
-}
+/* ============================================================================
+   GLOBAL STYLES
+   ============================================================================ */
 
+/* Import Design System */
+@import './styles/variables.css';
+@import './styles/common.css';
+
+/* Import Component Styles */
+@import './styles/components/App.css';
+@import './styles/components/Header.css';
+@import './styles/components/KpiGrid.css';
+@import './styles/components/KpiCard.css';
+@import './styles/components/ExtratoForm.css';
+@import './styles/components/ExtratoList.css';
+@import './styles/components/DividaCard.css';
+@import './styles/components/DividaForm.css';
+@import './styles/components/DividasSection.css';
+@import './styles/components/Breakdown.css';
+@import './styles/components/BreakdownCard.css';
+@import './styles/components/ChartBar.css';
+@import './styles/components/ChartOverview.css';
+@import './styles/components/ChartPie.css';
+@import './styles/components/MonthSelector.css';
+@import './styles/components/CategoryManager.css';
+@import './styles/components/ImportReviewModal.css';
+
+/* Reset & Base */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -29,8 +40,8 @@ html {
 
 body {
   font-family: var(--font-mono);
-  color: var(--text);
-  background: var(--bg);
+  color: var(--color-text);
+  background: var(--color-bg);
   min-height: 100vh;
 }
 
@@ -40,7 +51,7 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-color: var(--bg);
+  background-color: var(--color-bg);
   background-image:
     linear-gradient(rgba(37, 42, 58, 0.3) 1px, transparent 1px),
     linear-gradient(90deg, rgba(37, 42, 58, 0.3) 1px, transparent 1px);
@@ -48,11 +59,12 @@ body::before {
 }
 
 #root {
-  max-width: 1200px;
+  max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: var(--space-6) var(--space-5);
 }
 
+/* Animations */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -64,14 +76,24 @@ body::before {
   }
 }
 
+/* Charts Grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--bg);
+  background: var(--color-bg);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--color-border);
   border-radius: 3px;
 }

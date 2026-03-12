@@ -30,38 +30,19 @@ export default function DividasSection({
   onRemoveMovimento,
 }: Props) {
   return (
-    <section style={{ marginBottom: 24 }}>
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          color: 'var(--muted)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          marginBottom: 12,
-        }}
-      >
+    <section className="dividas-section">
+      <h2 className="dividas-section-header">
         Controle de dívidas
-      </p>
+      </h2>
 
       <DividaForm categories={categories} onAdd={onAddDivida} />
 
       {dividas.length === 0 ? (
-        <div
-          style={{
-            background: 'var(--surface)',
-            border: '1px solid var(--border)',
-            borderRadius: 12,
-            padding: 20,
-            color: 'var(--muted)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 12,
-          }}
-        >
+        <div className="card text-mono text-sm text-muted">
           Nenhuma dívida registrada.
         </div>
       ) : (
-        <div style={{ display: 'grid', gap: 16 }}>
+        <div className="grid gap-4">
           {dividas.map((divida) => (
             <DividaCard
               key={divida.id}

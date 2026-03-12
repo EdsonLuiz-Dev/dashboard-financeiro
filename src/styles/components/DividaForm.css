@@ -1,0 +1,91 @@
+/* ============================================================================
+   DIVIDA FORM COMPONENT
+   ============================================================================ */
+
+.divida-form {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  animation: fadeUp var(--transition-slow) ease both;
+}
+
+.divida-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.divida-form-title {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.divida-form-close {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0 var(--space-1);
+}
+
+.divida-form-modalidade {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.divida-form-modalidade-btn {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.divida-form-modalidade-btn.active {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+.divida-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.divida-form-field {
+  margin-bottom: var(--space-3);
+}
+
+.divida-form-submit {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--color-accent);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-weight: 600;
+}
+
+.divida-form-submit:hover {
+  background: var(--color-accent);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

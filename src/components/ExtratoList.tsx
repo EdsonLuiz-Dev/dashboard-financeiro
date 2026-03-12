@@ -22,7 +22,6 @@ interface Props {
 }
 
 export default function ExtratoList({ extratos, catColors, onRemove, activeCategory }: Props) {
-  // ✅ Hooks ALWAYS first — never after a conditional return
   const [page, setPage] = useState(1);
 
   const sorted = [...extratos].sort((a, b) => {
@@ -43,7 +42,6 @@ export default function ExtratoList({ extratos, catColors, onRemove, activeCateg
     setPage(1);
   }, [activeCategory, extratos]);
 
-  // ✅ Early return only after all hooks
   if (extratos.length === 0) return null;
 
   const pageItems = filtered.slice((page - 1) * perPage, page * perPage);
@@ -58,192 +56,113 @@ export default function ExtratoList({ extratos, catColors, onRemove, activeCateg
   }
 
   return (
-    <div
-      style={{
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 12,
-        padding: 20,
-        marginBottom: 24,
-        animation: 'fadeUp 0.4s ease both',
-      }}
-    >
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          color: 'var(--muted)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          marginBottom: 14,
-        }}
-      >
+    <div>
+      <h2 className="extrato-list-header">
         Extratos registrados ({extratos.length})
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        {pageItems.length === 0 && (
-          <div style={{ color: 'var(--muted)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
-            Nenhum registro nesta página.
-          </div>
-        )}
-        {(() => {
-          let lastDate = '';
-          return pageItems.map((e) => {
-            const showSeparator = e.data !== lastDate;
-            lastDate = e.data;
-            const hora = formatTime(e.criadoEm);
-            return (
-              <div key={e.id}>
-                {showSeparator && (
-                  <div
-                    style={{
-                      margin: '8px 0',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 12,
-                      color: 'var(--muted)',
-                    }}
-                  >
-                    {formatDate(e.data)} · {weekdayFor(e.data)}
-                  </div>
-                )}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '10px 12px',
-                    background: 'var(--surface2)',
-                    borderRadius: 8,
-                    border: '1px solid var(--border)',
-                    gap: 10,
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
-                    <span
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: '50%',
-                        background:
-                          e.tipo === 'receita'
-                            ? 'var(--green)'
-                            : catColors[e.categoria] ?? 'var(--muted)',
-                        flexShrink: 0,
-                      }}
-                    />
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <p
+      </h2>
+      <div className="extrato-list">
+        <div className="extrato-list-grid">
+          {pageItems.length === 0 && (
+            <div className="text-mono text-sm text-muted">
+              Nenhum registro nesta página.
+            </div>
+          )}
+          {(() => {
+            let lastDate = '';
+            return pageItems.map((e) => {
+              const showSeparator = e.data !== lastDate;
+              lastDate = e.data;
+              const hora = formatTime(e.criadoEm);
+              return (
+                <div key={e.id}>
+                  {showSeparator && (
+                    <div className="text-mono text-sm text-muted" style={{ margin: '8px 0' }}>
+                      {formatDate(e.data)} · {weekdayFor(e.data)}
+                    </div>
+                  )}
+                  <div className="extrato-item">
+                    <div className="extrato-item-left">
+                      <span
+                        className="w-2 h-2"
                         style={{
-                          fontFamily: 'var(--font-mono)',
-                          fontSize: 12,
-                          color: 'var(--text)',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
+                          borderRadius: '50%',
+                          background:
+                            e.tipo === 'receita'
+                              ? 'var(--color-success)'
+                              : catColors[e.categoria] ?? 'var(--color-text-muted)',
+                          flexShrink: 0,
                         }}
+                      />
+                      <div className="extrato-item-info">
+                        <p className="extrato-item-descricao">
+                          {e.descricao}
+                        </p>
+                        <p className="extrato-item-details">
+                          <span className="extrato-item-categoria">
+                            {e.tipo === 'receita' ? 'Receita' : e.categoria}
+                            {hora && (
+                              <span style={{ marginLeft: 6, opacity: 0.6 }}>· {hora}</span>
+                            )}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexShrink: 0 }}>
+                      <span className={`extrato-item-valor ${e.tipo}`}>
+                        {e.tipo === 'receita' ? '+' : '-'}{fmt.format(e.valor)}
+                      </span>
+                      <button
+                        onClick={() => onRemove(e.id)}
+                        className="extrato-item-remove"
+                        title="Remover extrato"
                       >
-                        {e.descricao}
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: 'var(--font-mono)',
-                          fontSize: 10,
-                          color: 'var(--muted)',
-                          marginTop: 2,
-                        }}
-                      >
-                        {e.tipo === 'receita' ? 'Receita' : e.categoria}
-                        {hora && (
-                          <span style={{ marginLeft: 6, opacity: 0.6 }}>· {hora}</span>
-                        )}
-                      </p>
+                        ✕
+                      </button>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        fontWeight: 700,
-                        fontSize: 14,
-                        color: e.tipo === 'receita' ? 'var(--green)' : 'var(--red)',
-                      }}
-                    >
-                      {e.tipo === 'receita' ? '+' : '-'}{fmt.format(e.valor)}
-                    </span>
-                    <button
-                      onClick={() => onRemove(e.id)}
-                      style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: 13,
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--muted)',
-                        cursor: 'pointer',
-                        padding: '2px 6px',
-                        borderRadius: 4,
-                        transition: 'color 0.2s',
-                      }}
-                      onMouseEnter={(ev) => { ev.currentTarget.style.color = 'var(--red)'; }}
-                      onMouseLeave={(ev) => { ev.currentTarget.style.color = 'var(--muted)'; }}
-                      title="Remover extrato"
-                    >
-                      ✕
-                    </button>
-                  </div>
                 </div>
-              </div>
-            );
-          });
-        })()}
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginTop: 12,
-        }}
-      >
-        <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)', fontSize: 12 }}>
-          Mostrando {pageItems.length} de {filtered.length} lançamentos
+              );
+            });
+          })()}
         </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page <= 1}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 12,
-              padding: '6px 8px',
-              borderRadius: 6,
-              border: '1px solid var(--border)',
-              background: 'var(--surface2)',
-              cursor: page <= 1 ? 'not-allowed' : 'pointer',
-            }}
-          >
-            Anterior
-          </button>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--muted)' }}>
-            {page} / {totalPages}
+
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: 'var(--space-3)',
+          }}>
+          <div className="text-mono text-sm text-muted">
+            Mostrando {pageItems.length} de {filtered.length} lançamentos
           </div>
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page >= totalPages}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 12,
-              padding: '6px 8px',
-              borderRadius: 6,
-              border: '1px solid var(--border)',
-              background: 'var(--surface2)',
-              cursor: page >= totalPages ? 'not-allowed' : 'pointer',
-            }}
-          >
-            Próxima
-          </button>
+          <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+              className="btn btn-sm"
+              style={{
+                cursor: page <= 1 ? 'not-allowed' : 'pointer',
+              }}
+            >
+              Anterior
+            </button>
+            <div className="text-mono text-sm text-muted">
+              {page} / {totalPages}
+            </div>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages}
+              className="btn btn-sm"
+              style={{
+                cursor: page >= totalPages ? 'not-allowed' : 'pointer',
+              }}
+            >
+              Próxima
+            </button>
+          </div>
         </div>
       </div>
     </div>
+    
   );
 }

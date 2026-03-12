@@ -17,62 +17,39 @@ export default function BreakdownCard({ name, value, maxValue, total, catColors,
 
   return (
     <div
-      style={{
-        background: 'var(--surface)',
-        border: isActive ? '2px solid var(--accent)' : '1px solid var(--border)',
-        borderRadius: 12,
-        padding: '14px 16px',
-        transition: 'transform 0.2s, border-color 0.2s',
-        cursor: onClick ? 'pointer' : 'default',
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; if (!isActive) e.currentTarget.style.borderColor = 'var(--accent)'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; if (!isActive) e.currentTarget.style.borderColor = isActive ? 'var(--accent)' : 'var(--border)'; }}
+      className={`breakdown-card interactive ${isActive ? 'active' : ''}`}
       onClick={() => onClick && onClick()}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
           <span
+            className="w-2 h-2"
             style={{
-              width: 8,
-              height: 8,
               borderRadius: '50%',
               background: color,
               flexShrink: 0,
+              height: '8px',
+              width: '8px',
             }}
           />
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text)' }}>
+          <span className="text-mono text-sm">
             {name}
           </span>
         </div>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--muted)' }}>
+        <span className="text-mono text-xs text-muted">
           {pct}%
         </span>
       </div>
-      <p
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 700,
-          fontSize: 16,
-          marginBottom: 8,
-        }}
-      >
+      <p className="text-display font-bold text-lg mb-2">
         {fmt.format(value)}
       </p>
-      <div
-        style={{
-          height: 3,
-          background: 'var(--border)',
-          borderRadius: 2,
-          overflow: 'hidden',
-        }}
-      >
+      <div className="progress-bar">
         <div
+          className="progress-bar-fill"
           style={{
             height: '100%',
             width: `${barWidth}%`,
             background: color,
-            borderRadius: 2,
-            transition: 'width 0.4s ease',
           }}
         />
       </div>

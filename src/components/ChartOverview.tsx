@@ -54,27 +54,8 @@ export default function ChartOverview({ entries, months }: Props) {
   };
 
   return (
-    <div
-      style={{
-        gridColumn: '1 / -1',
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 12,
-        padding: 20,
-        marginBottom: 24,
-        animation: 'fadeUp 0.4s ease both',
-      }}
-    >
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          color: 'var(--muted)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          marginBottom: 16,
-        }}
-      >
+    <div className="chart-overview">
+      <p className="chart-overview-title">
         Receita vs Gastos — visão mensal
       </p>
       <Bar

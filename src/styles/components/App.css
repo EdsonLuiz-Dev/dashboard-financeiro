@@ -1,0 +1,69 @@
+/* ============================================================================
+   APP COMPONENT
+   ============================================================================ */
+
+.app-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.app-saldo-section {
+  margin-bottom: var(--space-3);
+}
+
+.app-saldo-display {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.app-saldo-value {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 800;
+}
+
+.app-saldo-value.positive {
+  color: var(--color-accent);
+}
+
+.app-saldo-value.negative {
+  color: var(--color-danger);
+}
+
+.app-saldo-form {
+  margin-top: var(--space-2);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.app-saldo-input {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  width: 160px;
+}
+
+.app-no-data {
+  text-align: center;
+  padding: var(--space-12) var(--space-5);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-md);
+}
+
+.app-no-data-icon {
+  font-size: var(--text-4xl);
+  margin-bottom: var(--space-3);
+}
+
+.app-no-data-subtitle {
+  font-size: var(--text-sm);
+  margin-top: var(--space-2);
+}

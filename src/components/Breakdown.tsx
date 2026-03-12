@@ -19,26 +19,11 @@ export default function Breakdown({ gastos, totalGastos, activeMonth, catColors,
   const label = `Detalhamento — ${activeMonth}`;
 
   return (
-    <div style={{ marginBottom: 24 }}>
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          color: 'var(--muted)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          marginBottom: 12,
-        }}
-      >
+    <div className="breakdown">
+      <p className="breakdown-header">
         {label}
       </p>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: 12,
-        }}
-      >
+      <div className="breakdown-grid">
         {entries.map(([name, value]) => (
           <BreakdownCard
             key={name}

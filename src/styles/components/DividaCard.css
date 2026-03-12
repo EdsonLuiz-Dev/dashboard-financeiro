@@ -1,0 +1,270 @@
+/* ============================================================================
+   DIVIDA CARD COMPONENT
+   ============================================================================ */
+
+.divida-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  animation: fadeUp var(--transition-slow) ease both;
+}
+
+.divida-card.expanded {
+  border-color: var(--color-accent);
+  background: rgba(79, 156, 249, 0.05);
+}
+
+.divida-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-5);
+}
+
+.divida-card-title-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.divida-card-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.divida-card-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.divida-card-modalidade {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid;
+}
+
+.divida-card-modalidade.geral {
+  background: rgba(155, 127, 249, 0.2);
+  color: var(--color-info);
+  border-color: rgba(155, 127, 249, 0.3);
+}
+
+.divida-card-modalidade.credito {
+  background: rgba(249, 199, 79, 0.2);
+  color: var(--color-warning);
+  border-color: rgba(249, 199, 79, 0.3);
+}
+
+.divida-card-categoria {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.divida-card-description {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-5);
+  line-height: 1.5;
+}
+
+.divida-card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.divida-card-toggle {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.divida-card-toggle:hover {
+  background: var(--color-surface);
+  border-color: var(--color-accent);
+}
+
+.divida-card-remove {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(249, 96, 79, 0.3);
+  background: rgba(249, 96, 79, 0.1);
+  color: var(--color-danger);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.divida-card-remove:hover {
+  background: rgba(249, 96, 79, 0.2);
+  border-color: rgba(249, 96, 79, 0.5);
+}
+
+.divida-card-content {
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.divida-card-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.divida-card-stat {
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+}
+
+.divida-card-stat-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-2);
+}
+
+.divida-card-stat-value {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+.divida-card-stat-value.positive {
+  color: var(--color-success);
+}
+
+.divida-card-form {
+  margin-bottom: var(--space-4);
+}
+
+.divida-card-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-3);
+  align-items: end;
+}
+
+.divida-card-form-submit {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--color-accent);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-weight: 600;
+  justify-self: start;
+}
+
+.divida-card-form-submit:hover {
+  background: var(--color-accent);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.divida-card-movimentos {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-4);
+}
+
+.divida-card-movimentos-title {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.divida-card-movimentos-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.divida-card-movimento {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.divida-card-movimento-info {
+  flex: 1;
+}
+
+.divida-card-movimento-description {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  color: var(--color-text);
+}
+
+.divida-card-movimento-details {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+.divida-card-movimento-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.divida-card-movimento-valor {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.divida-card-movimento-remove {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(249, 96, 79, 0.3);
+  background: rgba(249, 96, 79, 0.1);
+  color: var(--color-danger);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.divida-card-movimento-remove:hover {
+  background: rgba(249, 96, 79, 0.2);
+}

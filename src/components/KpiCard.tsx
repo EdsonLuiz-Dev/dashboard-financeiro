@@ -33,18 +33,11 @@ export default function KpiCard({ label, value, sub, color, delay, badge }: Prop
 
   return (
     <div
+      className="kpi-card"
       style={{
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 12,
-        padding: '20px 18px 16px',
-        position: 'relative',
-        overflow: 'visible',
-        animation: `fadeUp 0.4s ease both`,
+        '--kpi-color': color,
         animationDelay: `${delay}s`,
-        transition: 'transform 0.2s, border-color 0.2s',
-        cursor: 'default',
-      }}
+      } as React.CSSProperties}
       onMouseEnter={(e) => {
         setHover(true);
         setMousePos({ x: e.clientX, y: e.clientY });
@@ -61,18 +54,6 @@ export default function KpiCard({ label, value, sub, color, delay, badge }: Prop
         setMousePos({ x: e.clientX, y: e.clientY });
       }}
     >
-      {/* Top color line */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 2,
-          background: color,
-        }}
-      />
-
       {hover && tooltip && mousePos &&
         createPortal(
           <div
@@ -102,55 +83,21 @@ export default function KpiCard({ label, value, sub, color, delay, badge }: Prop
           document.body
         )}
 
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          color: 'var(--muted)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          marginBottom: 8,
-        }}
-      >
-        <span style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
+      <p className="kpi-card-label">
+        <span className="kpi-card-sub">
           {label}
           {badge && (
-            <span
-              style={{
-                fontSize: 10,
-                background: 'var(--accent2)',
-                color: '#fff',
-                padding: '2px 6px',
-                borderRadius: 6,
-                fontWeight: 700,
-                marginLeft: 6,
-              }}
-            >
+            <span className="kpi-card-badge">
               {badge}
             </span>
           )}
         </span>
       </p>
-      <p
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 800,
-          fontSize: 24,
-          letterSpacing: -1,
-          color: 'var(--text)',
-        }}
-      >
+      <p className="kpi-card-value">
         {value}
       </p>
       {sub && (
-        <p
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 10,
-            color: 'var(--muted)',
-            marginTop: 6,
-          }}
-        >
+        <p className="kpi-card-trend">
           {sub}
         </p>
       )}

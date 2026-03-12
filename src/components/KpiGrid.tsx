@@ -44,15 +44,7 @@ export default function KpiGrid({ data, hideSaldo = false, showComputedSaldo = t
   });
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: 16,
-        marginBottom: 24,
-      }}
-      className="kpi-grid"
-    >
+    <div className="kpi-grid">
       {kpis.map((kpi, i) => (
         <KpiCard
           key={kpi.label}

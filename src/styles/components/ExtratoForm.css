@@ -1,0 +1,165 @@
+/* ============================================================================
+   EXTRATO FORM COMPONENT
+   ============================================================================ */
+
+.extrato-form-container {
+  margin-bottom: var(--space-5);
+}
+
+.extrato-form-collapsed {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.extrato-form-collapsed .btn {
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-5);
+  width: 100%;
+}
+
+.extrato-form-status {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-3);
+}
+
+.extrato-form-expanded {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  animation: fadeUp var(--transition-slow) ease both;
+}
+
+.extrato-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.extrato-form-title {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.extrato-form-close {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0 var(--space-1);
+}
+
+.extrato-form-import-btn {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-accent-2);
+  cursor: pointer;
+  margin-bottom: var(--space-4);
+}
+
+.extrato-form-tipo-toggle {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.extrato-form-tipo-btn {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-weight: 400;
+  color: white !important;
+}
+
+.extrato-form-tipo-btn.active {
+  border: none;
+}
+
+.extrato-form-tipo-btn.receita {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+}
+
+.extrato-form-tipo-btn.receita.active {
+  background: var(--color-success);
+}
+
+.extrato-form-tipo-btn.gasto {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+}
+
+.extrato-form-tipo-btn.gasto.active {
+  background: var(--color-danger);
+}
+
+.extrato-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.extrato-form-field {
+  margin-bottom: var(--space-3);
+}
+
+.extrato-form-categoria-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.extrato-form-manage-btn {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.extrato-form-submit {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--color-accent);
+  color: #fff;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-weight: 600;
+}
+
+.extrato-form-submit:hover {
+  background: var(--color-accent);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.extrato-form-hidden-input {
+  display: none;
+}

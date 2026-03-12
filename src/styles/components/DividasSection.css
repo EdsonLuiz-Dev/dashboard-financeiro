@@ -1,0 +1,46 @@
+/* ============================================================================
+   DIVIDAS SECTION COMPONENT
+   ============================================================================ */
+
+.dividas-section {
+  margin-bottom: var(--space-5);
+}
+
+.dividas-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.dividas-section-title {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.dividas-section-add-btn {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--color-accent);
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.dividas-section-add-btn:hover {
+  background: rgba(79, 156, 249, 0.1);
+  border-style: solid;
+}
+
+.dividas-section-grid {
+  display: grid;
+  gap: var(--space-4);
+}

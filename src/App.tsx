@@ -48,8 +48,8 @@ export default function App() {
 
   if (store.loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--muted)', fontFamily: 'var(--font-mono)', fontSize: 14 }}>
-        Carregando dados...
+      <div className="flex justify-center items-center" style={{ height: '100vh' }}>
+        <span className="text-muted font-mono text-lg">Carregando dados...</span>
       </div>
     );
   }
@@ -198,35 +198,16 @@ export default function App() {
     <>
       <Header months={months} activeMonth={activeMonth} onChange={setActiveMonth} />
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+      <div className="app-controls">
         <button
         onClick={handleClearAll}
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 11,
-          padding: '8px 12px',
-          borderRadius: 8,
-          border: '1px solid rgba(249,96,79,0.35)',
-          background: 'rgba(249,96,79,0.12)',
-          color: 'var(--red)',
-          cursor: 'pointer',
-          marginBottom: 0,
-        }}
+        className="btn btn-danger btn-sm"
       >
         Limpar todas as informações
       </button>
         <button
           onClick={() => store.setHideSaldo(!store.hideSaldo)}
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            padding: '8px 12px',
-            borderRadius: 8,
-            border: '1px solid var(--border)',
-            background: store.hideSaldo ? 'var(--surface2)' : 'transparent',
-            color: 'var(--muted)',
-            cursor: 'pointer',
-          }}
+          className={`btn btn-sm ${store.hideSaldo ? 'btn-primary' : ''}`}
         >
           {store.hideSaldo ? 'Mostrar Saldo' : 'Esconder Saldo'}
         </button>
@@ -242,45 +223,45 @@ export default function App() {
 
       {hasData && (
         <>
-          <div style={{ marginBottom: 12 }}>
+          <div className="app-saldo-section">
             {store.saldoAtual != null ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)', fontSize: 12 }}>Saldo Atual</div>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 800, color: store.saldoAtual >= 0 ? 'var(--accent)' : 'var(--red)' }}>
+              <div className="app-saldo-display">
+                <div className="text-muted font-mono text-base">Saldo Atual</div>
+                <div className={`app-saldo-value ${store.saldoAtual >= 0 ? 'positive' : 'negative'}`}>
                   {store.hideSaldo ? '***' : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(store.saldoAtual)}
                 </div>
                 <button
                   onClick={() => store.setSaldoAtual(null)}
-                  style={{ fontFamily: 'var(--font-mono)', fontSize: 11, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', cursor: 'pointer' }}
+                  className="btn btn-sm"
                 >
                   Limpar
                 </button>
                 <button
                   onClick={() => setEditingSaldo(true)}
-                  style={{ fontFamily: 'var(--font-mono)', fontSize: 11, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', cursor: 'pointer' }}
+                  className="btn btn-sm"
                 >
                   Editar
                 </button>
               </div>
             ) : (
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div className="flex gap-2 items-center">
                 <button
                   onClick={() => setEditingSaldo(true)}
-                  style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '8px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', cursor: 'pointer' }}
+                  className="btn"
                 >
                   Definir Saldo Atual
                 </button>
-                <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)', fontSize: 12 }}> (valor manual)</div>
+                <div className="text-muted font-mono text-base"> (valor manual)</div>
               </div>
             )}
 
             {editingSaldo && (
-              <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div className="app-saldo-form">
                 <input
                   value={tempSaldo}
                   onChange={(e) => setTempSaldo(e.target.value)}
                   placeholder="0,00"
-                  style={{ fontFamily: 'var(--font-mono)', fontSize: 14, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', width: 160 }}
+                  className="app-saldo-input"
                 />
                 <button
                   onClick={() => {
@@ -288,13 +269,13 @@ export default function App() {
                     store.setSaldoAtual(v === null || Number.isNaN(v) ? null : v);
                     setEditingSaldo(false);
                   }}
-                  style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '8px 12px', borderRadius: 8, border: 'none', background: 'var(--accent)', color: '#fff', cursor: 'pointer' }}
+                  className="btn btn-primary"
                 >
                   Salvar
                 </button>
                 <button
                   onClick={() => { setEditingSaldo(false); setTempSaldo(''); }}
-                  style={{ fontFamily: 'var(--font-mono)', fontSize: 12, padding: '8px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', cursor: 'pointer' }}
+                  className="btn"
                 >
                   Cancelar
                 </button>
@@ -324,16 +305,10 @@ export default function App() {
       )}
 
       {!hasData && (
-        <div style={{
-          textAlign: 'center',
-          padding: '60px 20px',
-          color: 'var(--muted)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: 13,
-        }}>
-          <p style={{ fontSize: 32, marginBottom: 12 }}>📊</p>
+        <div className="app-no-data">
+          <p className="app-no-data-icon">📊</p>
           <p>Nenhum dado financeiro registrado ainda.</p>
-          <p style={{ fontSize: 11, marginTop: 6 }}>Adicione um extrato ou uma dívida para começar.</p>
+          <p className="app-no-data-subtitle">Adicione um extrato ou uma dívida para começar.</p>
         </div>
       )}
 
