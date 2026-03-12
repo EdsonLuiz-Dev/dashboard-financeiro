@@ -36,7 +36,7 @@ export default function App() {
 
   const months = getAvailableMonths(store.extratos, store.dividas);
   const effectiveMonth = activeMonth && months.includes(activeMonth) ? activeMonth : (months.length > 0 ? months[months.length - 1] : '');
-  const data = useFinanceiro(store.extratos, store.dividas, effectiveMonth, store.saldoAtual ?? null);
+  const data = useFinanceiro(store.extratos, store.dividas, effectiveMonth);
   const dashboardEntries = getDashboardEntries(store.extratos, store.dividas);
 
   const hasData = dashboardEntries.length > 0;

@@ -39,6 +39,9 @@ export function useStore() {
   const extratosRef = useRef<Extrato[]>(extratos);
   extratosRef.current = extratos;
 
+  const saldoAtualRef = useRef<number | null>(saldoAtual);
+  saldoAtualRef.current = saldoAtual;
+
   // ---------------------------------------------------------------------------
   // Hydration from Supabase (runs once on mount)
   // ---------------------------------------------------------------------------
@@ -89,6 +92,15 @@ export function useStore() {
     extratosRef.current = next;
     setExtratos(next);
     void storage.insertExtrato(newExtrato);
+
+    // Atualiza saldoAtual automaticamente ao adicionar extrato manual
+    if (saldoAtualRef.current !== null) {
+      const delta = extrato.tipo === 'receita' ? extrato.valor : -extrato.valor;
+      const newSaldo = saldoAtualRef.current + delta;
+      saldoAtualRef.current = newSaldo;
+      setSaldoAtualState(newSaldo);
+      void storage.save(STORAGE_KEYS.saldoAtual, newSaldo);
+    }
   }, []);
 
   const addExtratos = useCallback((items: Array<Omit<Extrato, 'id'>>) => {
@@ -143,10 +155,21 @@ export function useStore() {
   }, []);
 
   const removeExtrato = useCallback((id: string) => {
+    const deleted = extratosRef.current.find((e) => e.id === id);
     const next = extratosRef.current.filter((e) => e.id !== id);
     extratosRef.current = next;
     setExtratos(next);
     void storage.deleteExtrato(id);
+
+    // Ao deletar uma transação, ajusta o saldoAtual inversamente
+    if (deleted && saldoAtualRef.current !== null) {
+      // Se foi gasto, readiciona o dinheiro; se foi receita, remove
+      const delta = deleted.tipo === 'gasto' ? deleted.valor : -deleted.valor;
+      const newSaldo = saldoAtualRef.current + delta;
+      saldoAtualRef.current = newSaldo;
+      setSaldoAtualState(newSaldo);
+      void storage.save(STORAGE_KEYS.saldoAtual, newSaldo);
+    }
   }, []);
 
   // ---------------------------------------------------------------------------

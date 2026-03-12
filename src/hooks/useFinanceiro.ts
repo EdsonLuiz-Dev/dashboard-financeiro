@@ -52,8 +52,7 @@ export function getAvailableMonths(extratos: Extrato[], dividas: Divida[]): stri
 export function useFinanceiro(
   extratos: Extrato[],
   dividas: Divida[],
-  activeMonth: string,
-  saldoAtual: number | null = null
+  activeMonth: string
 ): AggregatedData {
   return useMemo(() => {
     const entries = getDashboardEntries(extratos, dividas);
@@ -85,22 +84,8 @@ export function useFinanceiro(
       finalSaldoFromEntries = (latest as any).saldoConta as number;
     }
 
-    // Determine if activeMonth is the current month
-    const todayKey = monthKey(new Date().toISOString().slice(0, 10));
-    let saldo: number;
-    if (activeMonth === todayKey) {
-      // For current month, prefer explicit persisted saldoAtual (available balance), then reported final saldo, then computed
-      if (saldoAtual !== null && saldoAtual !== undefined) {
-        saldo = saldoAtual;
-      } else if (finalSaldoFromEntries !== null) {
-        saldo = finalSaldoFromEntries;
-      } else {
-        saldo = computedSaldo;
-      }
-    } else {
-      // For past months, show the month-end reported saldo when available, otherwise computed
-      saldo = finalSaldoFromEntries !== null ? finalSaldoFromEntries : computedSaldo;
-    }
+    // Use the month-end reported saldo from imported entries when available, otherwise use computed
+    const saldo = finalSaldoFromEntries !== null ? finalSaldoFromEntries : computedSaldo;
     const poupanca = receita > 0 ? (saldo / receita) * 100 : 0;
 
     const activeMonths = [activeMonth];
@@ -113,5 +98,5 @@ export function useFinanceiro(
       poupanca,
       activeMonths,
     };
-  }, [extratos, dividas, activeMonth]);
+  }, [extratos, dividas, activeMonth]); // saldoAtual is shown separately in the UI and does not affect the computed saldo
 }
